@@ -2,6 +2,11 @@
 # Builds and starts the SuperKart backend (Flask) and frontend (Streamlit) containers
 set -e
 
+# 0. GitHub Codespaces filters traffic between containers on a Docker bridge network by default,
+#    which makes the frontend time out when calling the backend. Allow it.
+sudo sysctl -w net.bridge.bridge-nf-call-iptables=0 || true
+sudo iptables -P FORWARD ACCEPT || true
+
 # 1. Create a Docker network so the two containers can talk to each other by name
 docker network create superkart-net 2>/dev/null || true
 
